@@ -16,10 +16,12 @@ dragging orders on the chart all work normally.
 
 ## Quick start
 
-1. Install it. Download [`PATsButtons.cs`](../PATsButtons.cs) into
-   `Documents\NinjaTrader 8\bin\Custom\Indicators\`, open the **NinjaScript Editor**, and
-   press **F5** to compile. (If an older copy of PATsButtons is already installed, remove
-   it first with **Tools → Remove NinjaScript Assembly**.)
+1. Install it. Download [`PATsButtons_v2.0.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip),
+   then in the NinjaTrader Control Center go to **Tools → Import → NinjaScript Add-On…**
+   and pick the zip. (Or copy [`PATsButtons.cs`](../PATsButtons.cs) into
+   `Documents\NinjaTrader 8\bin\Custom\Indicators\` and press **F5** in the NinjaScript
+   Editor.) If an older copy is installed, remove it first — see
+   [Updating or switching](../README.md#updating-or-switching).
 2. Open a chart with **Chart Trader** visible and add the **PATsButtons** indicator.
 3. In its settings, either:
    - leave **Sizing = RiskBased**, set **Max Risk ($)**, and choose 1 to 5 ATM templates

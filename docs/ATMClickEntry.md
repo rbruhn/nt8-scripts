@@ -13,9 +13,11 @@ instrument, ATM template and quantity.
 
 ## Quick start
 
-1. Download [`ATMClickEntry.cs`](../ATMClickEntry.cs) into
-   `Documents\NinjaTrader 8\bin\Custom\Indicators\`, open the **NinjaScript Editor**, and
-   press **F5** to compile.
+1. Download [`ATMClickEntry_v1.0.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.0.zip),
+   then in the NinjaTrader Control Center go to **Tools → Import → NinjaScript Add-On…**
+   and pick the zip. (Or copy [`ATMClickEntry.cs`](../ATMClickEntry.cs) into
+   `Documents\NinjaTrader 8\bin\Custom\Indicators\` and press **F5** in the NinjaScript
+   Editor.)
 2. Open a chart with **Chart Trader** visible and add the **ATMClickEntry** indicator.
 3. In Chart Trader, pick the account, instrument, **ATM Strategy** and order quantity.
 4. Hold Shift or Ctrl and left-click the price where you want in.

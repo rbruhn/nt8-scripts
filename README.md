@@ -11,14 +11,33 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 
 ## Install
 
-Each script is a single `.cs` file with no other dependencies.
+### Option 1: import the add-on (easiest)
+
+| Script | Download |
+|---|---|
+| PATsButtons v2.0 | [PATsButtons_v2.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip) |
+| ATMClickEntry v1.0 | [ATMClickEntry_v1.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.0.zip) |
+
+1. Download the zip. Don't unzip it.
+2. In the NinjaTrader Control Center, go to **Tools → Import → NinjaScript Add-On…** and
+   pick the zip. NinjaTrader installs and compiles it.
+3. Open a chart with **Chart Trader** visible and add the indicator.
+
+### Option 2: copy the .cs file
+
+Each script is a single `.cs` file with no other dependencies. Use this if you want to
+read or change the code.
 
 1. Download the `.cs` file into `Documents\NinjaTrader 8\bin\Custom\Indicators\`.
 2. In NinjaTrader, open **New → NinjaScript Editor** and press **F5** to compile.
 3. Open a chart with **Chart Trader** visible and add the indicator.
 
-If you have an older copy installed as an add-on (a `.dll`), remove it first with
-**Tools → Remove NinjaScript Assembly**, or NinjaTrader will report duplicate names.
+### Updating or switching
+
+Remove the old copy before installing a new one, or NinjaTrader will report duplicate
+names:
+- installed from a zip → **Tools → Remove NinjaScript Assembly**
+- installed as a `.cs` → delete it from `bin\Custom\Indicators\` (or in the NinjaScript Editor)
 
 ## Disclaimer
 
