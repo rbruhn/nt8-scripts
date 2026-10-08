@@ -15,6 +15,13 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 > **ATM Strategy** dropdown (**Custom…**), set the contracts, stop and targets to suit
 > your trading, and name them whatever you like.
 
+## Related
+
+- [Chart Jot](https://github.com/rbruhn/chartjot): a trading journal for NinjaTrader 8.
+  An NT8 add-on sends your trades to it automatically (or import a CSV of executions) so
+  you can review them, add notes and screenshots, and track performance. The **Chart Jot**
+  button in the screenshot belongs to Chart Jot's add-on, not to these scripts.
+
 ## Install
 
 ### Option 1: import the add-on (easiest)
