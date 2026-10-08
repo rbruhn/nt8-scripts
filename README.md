@@ -9,6 +9,12 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 
 ![PATsButtons inside Chart Trader](images/patsbuttons.png)
 
+> **About ATM template names:** names like `2C-16S-4P-1R` in the guides and the
+> screenshot are only examples from the author's setup (2 contracts, 16-tick stop,
+> 4-tick target, 1 runner). ATM templates are your own: create them in Chart Trader's
+> **ATM Strategy** dropdown (**Custom…**), set the contracts, stop and targets to suit
+> your trading, and name them whatever you like.
+
 ## Install
 
 ### Option 1: import the add-on (easiest)

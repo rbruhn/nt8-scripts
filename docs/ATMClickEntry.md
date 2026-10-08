@@ -9,6 +9,12 @@ the ATM template selected in Chart Trader attached.
 No buttons and no settings. It uses whatever Chart Trader has selected: account,
 instrument, ATM template and quantity.
 
+> **About ATM template names:** names like `2C-16S-4P-1R` in this guide are only
+> examples from the author's setup (2 contracts, 16-tick stop,
+> 4-tick target, 1 runner). ATM templates are your own: create them in Chart Trader's
+> **ATM Strategy** dropdown (**Custom…**), set the contracts, stop and targets to suit
+> your trading, and name them whatever you like.
+
 ---
 
 ## Quick start
@@ -38,8 +44,9 @@ where price has to *come back to* gives a limit (pullback).
 
 ### Example
 
-ES is trading 5000.00 bid / 5000.25 ask (middle 5000.125). Chart Trader has
-`2C-16S-4P-1R` selected and quantity 2.
+ES is trading 5000.00 bid / 5000.25 ask (middle 5000.125). Chart Trader has an ATM
+template selected (here an example one named `2C-16S-4P-1R`: 16-tick stop, 4-tick target)
+and quantity 2.
 
 - **Shift-click at 5002.00** → buy **stop** for 2 at 5002.00. When it fills, the ATM places
   its 16-tick stop and 4-tick target.

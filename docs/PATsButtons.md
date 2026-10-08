@@ -12,6 +12,14 @@ dragging orders on the chart all work normally.
 
 ![PATsButtons inside Chart Trader](../images/patsbuttons.png)
 
+> **About ATM template names:** names like `2C-16S-4P-1R` in this guide and the
+> screenshot are only examples from the author's setup (2 contracts, 16-tick stop,
+> 4-tick target, 1 runner). ATM templates are your own: create them in Chart Trader's
+> **ATM Strategy** dropdown (**Custom…**), set the contracts, stop and targets to suit
+> your trading, and name them whatever you like.
+> PATsButtons reads each template's contract count from inside the template, never from
+> its name.
+
 ---
 
 ## Quick start
@@ -82,8 +90,8 @@ Example: ES, Max Risk $300, the signal bar's high is 5000.00 and its low is 4998
 
 1. **Entry** = 5000.25 (high + 1 tick). **Stop** = 4997.75 (low − 1 tick).
 2. **Risk** = 10 ticks = $125 per contract → $300 ÷ $125 = **2 contracts**.
-3. Of the ATM templates you chose, the largest that fits 2 contracts is `2C-16S-4P-1R`
-   (2 contracts), so it places a buy stop for 2 at 5000.25 with that template attached.
+3. Of the ATM templates you chose, the largest that fits 2 contracts is a 2-contract
+   template (here one named `2C-16S-4P-1R`), so it places a buy stop for 2 at 5000.25 with that template attached.
 4. **Fill**: the ATM places its own stop (16 ticks, 4996.25) and its targets.
 5. **Right after**: PATsButtons moves every ATM stop to **4997.75**.
 
