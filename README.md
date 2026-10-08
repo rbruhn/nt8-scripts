@@ -56,3 +56,7 @@ names:
 
 These scripts place real orders on whatever account Chart Trader has selected. Test on
 **Sim101** or **Playback101** first. Use at your own risk.
+
+## License
+
+[MIT](LICENSE)
