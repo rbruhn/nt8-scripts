@@ -20,7 +20,7 @@ template and quantity.
 
 ## Quick start
 
-1. Download [`ATMClickEntry_v1.0.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.0.zip),
+1. Download [`ATMClickEntry_v1.1.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.1.zip),
    then in the NinjaTrader Control Center go to **Tools → Import → NinjaScript Add-On…**
    and pick the zip. (Or copy [`ATMClickEntry.cs`](../ATMClickEntry.cs) into
    `Documents\NinjaTrader 8\bin\Custom\Indicators\` and press **F5** in the NinjaScript
