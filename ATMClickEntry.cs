@@ -2,8 +2,13 @@
 // NinjaTrader 8 Indicator
 //
 // FEATURES:
-//   Ctrl  + Left-Click on chart → Sell at clicked price
 //   Shift + Left-Click on chart → Buy  at clicked price
+//   Ctrl  + Left-Click on chart → Sell at clicked price
+//     (or Ctrl+Shift + Left-Click, with "Use Ctrl+Shift+Click to Sell" ticked in
+//      the indicator's settings, for anyone who moves the chart with Ctrl+Click)
+//
+//   The keys must match exactly: an extra modifier held (Alt, or Ctrl with Buy's
+//   Shift) means no order. It doesn't matter which key was pressed first.
 //
 //   Order type is determined automatically:
 //     Buy:  Stop if clicked price >= Bid/Ask midpoint | Limit if below
@@ -19,6 +24,7 @@
 
 #region Using declarations
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using System.Windows.Input;
 using NinjaTrader.Cbi;
@@ -30,6 +36,14 @@ namespace NinjaTrader.NinjaScript.Indicators
 {
     public class ATMClickEntry : Indicator
     {
+        #region Properties
+        // [Display] only (no [NinjaScriptProperty]): it shows in the settings and is saved with the
+        // workspace, without changing the generated code below.
+        [Display(Name = "Use Ctrl+Shift+Click to Sell", Order = 1, GroupName = "Hot Keys",
+            Description = "Sell with Ctrl+Shift+Click instead of Ctrl+Click, so Ctrl+Click stays free (for example to move the chart). Buy is always Shift+Click.")]
+        public bool SellWithCtrlShift { get; set; }
+        #endregion
+
         #region Private fields
         private ChartScale  _chartScale;
         private ChartTrader _chartTrader;
@@ -39,10 +53,12 @@ namespace NinjaTrader.NinjaScript.Indicators
         {
             if (State == State.SetDefaults)
             {
-                Description = "Ctrl+Click to Sell, Shift+Click to Buy — uses selected ATM template and Chart Trader instrument.";
+                Description = "Shift+Click to Buy, Ctrl+Click (or Ctrl+Shift+Click) to Sell — uses selected ATM template and Chart Trader instrument.";
                 Name        = "ATMClickEntry";
                 Calculate   = Calculate.OnBarClose;
                 IsOverlay   = true;
+
+                SellWithCtrlShift = false;
             }
             else if (State == State.Historical)
             {
@@ -94,9 +110,14 @@ namespace NinjaTrader.NinjaScript.Indicators
 
             bool ctrlHeld  = Keyboard.IsKeyDown(Key.LeftCtrl)  || Keyboard.IsKeyDown(Key.RightCtrl);
             bool shiftHeld = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+            bool altHeld   = Keyboard.IsKeyDown(Key.LeftAlt)   || Keyboard.IsKeyDown(Key.RightAlt);
 
-            // Require exactly one modifier — ignore if both or neither are held
-            if (ctrlHeld == shiftHeld) return;
+            // Exact match only: Buy = Shift; Sell = Ctrl, or Ctrl+Shift when SellWithCtrlShift
+            // is on. Any other combination (Alt, or Ctrl+Shift when it's off) does nothing.
+            if (altHeld) return;
+            bool buy  = shiftHeld && !ctrlHeld;
+            bool sell = SellWithCtrlShift ? (ctrlHeld && shiftHeld) : (ctrlHeld && !shiftHeld);
+            if (!buy && !sell) return;
 
             // Y coordinate → price (DPI-aware)
             if (_chartScale == null) return;
@@ -107,7 +128,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             // Bid/Ask midpoint to determine Stop vs Limit
             double midpoint = (GetCurrentBid() + GetCurrentAsk()) / 2.0;
 
-            if (shiftHeld)
+            if (buy)
             {
                 // Shift + Click = BUY
                 OrderType oType = clickedPrice >= midpoint ? OrderType.StopMarket : OrderType.Limit;
@@ -115,9 +136,9 @@ namespace NinjaTrader.NinjaScript.Indicators
                 TriggerCustomEvent(o => SubmitAtmOrder(OrderAction.Buy, oType, cp), null);
                 e.Handled = true;
             }
-            else if (ctrlHeld)
+            else
             {
-                // Ctrl + Click = SELL
+                // Ctrl + Click (or Ctrl+Shift + Click) = SELL
                 OrderType oType = clickedPrice <= midpoint ? OrderType.StopMarket : OrderType.Limit;
                 double cp = clickedPrice;
                 TriggerCustomEvent(o => SubmitAtmOrder(OrderAction.Sell, oType, cp), null);

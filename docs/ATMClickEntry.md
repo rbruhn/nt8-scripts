@@ -4,10 +4,11 @@ A NinjaTrader 8 indicator for placing an entry **at a price you click on the cha
 the ATM template selected in Chart Trader attached.
 
 - **Shift + left-click** → buy at the clicked price
-- **Ctrl + left-click** → sell at the clicked price
+- **Ctrl + left-click** → sell at the clicked price (or **Ctrl+Shift + left-click**, see
+  [Hot keys](#hot-keys))
 
-No buttons and no settings. It uses whatever Chart Trader has selected: account,
-instrument, ATM template and quantity.
+No buttons. It uses whatever Chart Trader has selected: account, instrument, ATM
+template and quantity.
 
 > **About ATM template names:** names like `2C-16S-4P-1R` in this guide are only
 > examples from the author's setup (2 contracts, 16-tick stop,
@@ -26,7 +27,32 @@ instrument, ATM template and quantity.
    Editor.)
 2. Open a chart with **Chart Trader** visible and add the **ATMClickEntry** indicator.
 3. In Chart Trader, pick the account, instrument, **ATM Strategy** and order quantity.
-4. Hold Shift or Ctrl and left-click the price where you want in.
+4. Hold Shift (buy) or Ctrl (sell) and left-click the price where you want in.
+
+---
+
+## Hot keys
+
+The indicator has one setting, under **Hot Keys** in its settings window (right-click
+the chart → **Indicators…** → **ATMClickEntry**):
+
+- **Use Ctrl+Shift+Click to Sell** (off by default). Tick it if you use Ctrl+click for
+  something else, like moving the chart. Then:
+  - **Shift + click** buys, as before.
+  - **Ctrl+Shift + click** sells.
+  - A plain **Ctrl + click** is left alone; no order.
+
+The keys must match exactly:
+
+| You hold | Setting off | Setting on |
+|---|---|---|
+| Shift | Buy | Buy |
+| Ctrl | Sell | nothing |
+| Ctrl + Shift | nothing | Sell |
+| anything with Alt | nothing | nothing |
+
+It doesn't matter which key you press first, or whether you use the left or right
+Ctrl/Shift; only what's held when the mouse button goes down counts.
 
 ---
 
@@ -34,7 +60,7 @@ instrument, ATM template and quantity.
 
 You don't choose. It compares the clicked price with the middle of the bid and ask:
 
-| You click | Buy (Shift) | Sell (Ctrl) |
+| You click | Buy | Sell |
 |---|---|---|
 | **Above** the bid/ask middle | Buy **stop** | Sell **limit** |
 | **Below** the bid/ask middle | Buy **limit** | Sell **stop** |
@@ -66,7 +92,9 @@ The clicked price is rounded to the nearest tick.
   not the chart's own. You can watch ES and trade MES. The stop/limit choice uses the
   chart's bid and ask, which is fine when both move together, as ES and MES do.
 - **Orders are TIF Day.**
-- **Holding both Shift and Ctrl** does nothing, so a stray key can't place the wrong side.
+- **Extra keys block the click.** Holding a key the setting doesn't use (both Shift and
+  Ctrl with the setting off, or Alt at any time) does nothing, so a stray key can't place
+  the wrong side.
 - **Right-click menus** are ignored. NinjaTrader sends a fake click when its right-click
   menu closes, and ATMClickEntry filters it out.
 - Every order is a real order on the selected account. Try it on **Sim101** first.
