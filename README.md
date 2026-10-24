@@ -5,7 +5,7 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 | Script | What it does | Guide |
 |---|---|---|
 | [PATsButtons](PATsButtons.cs) | Four buttons in Chart Trader that enter off the signal bar, size the trade from your dollar risk, pick a matching ATM template, and move the ATM's stop to the signal bar. | [docs/PATsButtons.md](docs/PATsButtons.md) |
-| [ATMClickEntry](ATMClickEntry.cs) | Shift-click to buy, Ctrl-click to sell at the clicked price, using the ATM template selected in Chart Trader. | [docs/ATMClickEntry.md](docs/ATMClickEntry.md) |
+| [ATMClickEntry](ATMClickEntry.cs) | Shift-click to buy, Ctrl-click (or Ctrl+Shift-click) to sell at the clicked price, using the ATM template selected in Chart Trader. | [docs/ATMClickEntry.md](docs/ATMClickEntry.md) |
 
 ![PATsButtons inside Chart Trader](images/patsbuttons.png)
 
@@ -29,7 +29,7 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 | Script | Download |
 |---|---|
 | PATsButtons v2.0 | [PATsButtons_v2.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip) |
-| ATMClickEntry v1.0 | [ATMClickEntry_v1.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.0.zip) |
+| ATMClickEntry v1.1 | [ATMClickEntry_v1.1.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.1.zip) |
 
 1. Download the zip. Don't unzip it.
 2. In the NinjaTrader Control Center, go to **Tools → Import → NinjaScript Add-On…** and
