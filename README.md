@@ -29,7 +29,7 @@ NinjaTrader 8 indicators for entering trades with ATM strategies.
 | Script | Download |
 |---|---|
 | PATsButtons v2.0 | [PATsButtons_v2.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip) |
-| ATMClickEntry v1.0 | [ATMClickEntry_v1.0.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.0.zip) |
+| ATMClickEntry v1.1 | [ATMClickEntry_v1.1.zip](https://github.com/rbruhn/nt8-scripts/raw/main/addons/ATMClickEntry_v1.1.zip) |
 
 1. Download the zip. Don't unzip it.
 2. In the NinjaTrader Control Center, go to **Tools → Import → NinjaScript Add-On…** and
