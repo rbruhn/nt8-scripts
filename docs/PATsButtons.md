@@ -24,7 +24,7 @@ dragging orders on the chart all work normally.
 
 ## Quick start
 
-1. Install it. Download [`PATsButtons_v2.0.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip),
+1. Install it. Download [`PATsButtons_v2.1.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.1.zip),
    then in the NinjaTrader Control Center go to **Tools → Import → NinjaScript Add-On…**
    and pick the zip. (Or copy [`PATsButtons.cs`](../PATsButtons.cs) into
    `Documents\NinjaTrader 8\bin\Custom\Indicators\` and press **F5** in the NinjaScript
