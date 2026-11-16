@@ -24,7 +24,7 @@ dragging orders on the chart all work normally.
 
 ## Quick start
 
-1. Install it. Download [`PATsButtons_v2.0.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.0.zip),
+1. Install it. Download [`PATsButtons_v2.1.zip`](https://github.com/rbruhn/nt8-scripts/raw/main/addons/PATsButtons_v2.1.zip),
    then in the NinjaTrader Control Center go to **Tools → Import → NinjaScript Add-On…**
    and pick the zip. (Or copy [`PATsButtons.cs`](../PATsButtons.cs) into
    `Documents\NinjaTrader 8\bin\Custom\Indicators\` and press **F5** in the NinjaScript
@@ -104,9 +104,12 @@ filling, the stop still refers to the original signal bar.
 - From the templates you chose, it uses the **largest one that fits** that number.
 - Example with templates of 10, 15 and 20 contracts: the math says 23 → 20. Says 17 → 15.
   Says 12 → 10. Says 7 → **skipped**, because even the smallest doesn't fit.
+- When a click is skipped for risk, a short notice flashes above the buttons for a few
+  seconds, e.g. **"Risk $620 > Max Risk $500"**. The Bar Range line already shows
+  `skip (risk)` before you click.
 - With **Sizing = RiskBased**, Chart Trader's **ATM dropdown and quantity box are ignored**.
   Only its account and instrument are used. (With **UseChartTrader**, they're used instead
-  of Max Risk and the chosen templates.)
+  of the chosen templates, and Max Risk becomes an optional limit.)
 
 > **Tip:** give your templates a stop **wider than any signal bar you'd trade**. For a
 > split second after the fill the template's own stop is live. A wide one means the move
@@ -120,8 +123,8 @@ filling, the stop still refers to the original signal bar.
 
 | Setting | Default | What it does |
 |---|---|---|
-| **Sizing** | RiskBased | **RiskBased:** contracts from Max Risk, ATM from the templates you choose. **UseChartTrader:** no sizing; uses the ATM and quantity selected in Chart Trader, and Max Risk and the chosen templates are ignored. See below. |
-| **Max Risk ($)** | 0 | Most dollars to risk per trade. Sets the number of contracts. **No trades while it's 0.** Uses the dollar value of the instrument selected in Chart Trader (ES, MES, NQ…), so set it for the instrument you trade. |
+| **Sizing** | RiskBased | **RiskBased:** contracts from Max Risk, ATM from the templates you choose. **UseChartTrader:** no sizing; uses the ATM and quantity selected in Chart Trader, and the chosen templates are ignored. Max Risk is an optional limit. See below. |
+| **Max Risk ($)** | 0 | Most dollars to risk per trade. **RiskBased:** sets the number of contracts; **no trades while it's 0.** **UseChartTrader:** a trade that would risk more is skipped (never resized); 0 = no limit. Uses the dollar value of the instrument selected in Chart Trader (ES, MES, NQ…), so set it for the instrument you trade. |
 | **Entry Offset Ticks** | 1 | Ticks beyond the signal bar's high (long) or low (short) for the stop entry. |
 | **Stop Offset Ticks** | 1 | Ticks beyond the signal bar's other end where the ATM's stop is moved. |
 | **Use Limit When Price Is Past Entry** | Off | If price is already beyond the entry when the order would go in, a stop entry would be rejected. **Off:** skip and say why. **On:** place a **GTC limit at the entry price** that waits for a pullback, until it fills or you cancel it. |
@@ -131,8 +134,15 @@ filling, the stop still refers to the original signal bar.
 For traders who manage their own risk. Each click uses the **ATM strategy and quantity
 selected in Chart Trader**, the same way Chart Trader's own buttons do.
 
-When you pick UseChartTrader, **Max Risk ($)** and the **2. ATM Templates** group are hidden
-in the settings window. Switch back to RiskBased and they reappear with their values.
+When you pick UseChartTrader, the **2. ATM Templates** group is hidden in the settings
+window. Switch back to RiskBased and it reappears with its values.
+
+**Max Risk ($)** stays visible and works as a limit. Leave it at 0 for no limit. Set it,
+and a click is **skipped** (never resized) when the selected quantity would risk more.
+Example: Chart Trader quantity 4, Max Risk $500. A bar risking $100 per contract → $400,
+the trade goes in. A bar risking $200 per contract → $800: the Bar Range line shows
+`skip (risk)`, and a click flashes **"4c risk $800 > Max Risk $500"** above the buttons
+with no order placed.
 
 Everything else works the same: the buttons, entry and stop off the signal bar, moving
 the ATM's stop to the signal bar, Lock Initial Stop, Good Close, the 5:1 filter (using the
@@ -172,6 +182,7 @@ fits**. If even the smallest doesn't fit, the trade is skipped.
 | **Use Good Close** | On | Skip a long if the signal bar didn't close near its high, or a short if it didn't close near its low. |
 | **Good Close Fraction** | 0.34 | How near. 0.34 = a long needs the close in the top 34% of the bar; a short in the bottom 34%. When a click is blocked by this filter, **"Failed Good Close Fraction"** flashes above the buttons for a few seconds. |
 | **Use 5:1 Filter** | Off | For **Apex Legacy accounts** and their 5:1 risk-to-reward rule. Skips the trade if the ticks from entry to stop are more than 5 × the ATM template's first target. Example: 4-tick target → any stop over 20 ticks is skipped. |
+| **Max Signal Bar Ticks** | 0 (off) | Skips the trade if the signal bar, high to low, is more than this many ticks. The entry and stop offsets aren't counted. Works with **both Sizing modes**. The Bar Range line shows `skip (bar size)`, and a click flashes e.g. **"Bar 12t > Max Signal Bar 10t"**. **RiskBased:** a big bar normally just gets fewer contracts; this blocks it even when Max Risk would allow 1. **UseChartTrader:** a simple limit in ticks instead of (or as well as) Max Risk in dollars. |
 
 ### 4. Stop
 
