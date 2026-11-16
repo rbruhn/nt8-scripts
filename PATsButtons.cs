@@ -278,6 +278,7 @@ namespace NinjaTrader.NinjaScript.Indicators
                 UseGoodClose             = true;
                 GoodCloseFraction        = 0.34;
                 UseFiveToOne             = false;
+                MaxSignalBarTicks        = 0;
 
                 LockInitialStop          = false;
 
@@ -362,7 +363,9 @@ namespace NinjaTrader.NinjaScript.Indicators
 
             if (Sizing == SizingMode.UseChartTrader)
             {
-                Say("Sizing: Use Chart Trader. ATM and quantity come from Chart Trader; Max Risk and the ATM templates are ignored.");
+                Say(MaxRisk > 0
+                    ? string.Format("Sizing: Use Chart Trader. ATM and quantity come from Chart Trader; trades risking more than Max Risk ${0:0.00} are skipped.", MaxRisk)
+                    : "Sizing: Use Chart Trader. ATM and quantity come from Chart Trader; no Max Risk limit (0).");
                 return;
             }
 
@@ -1068,6 +1071,8 @@ namespace NinjaTrader.NinjaScript.Indicators
             if (size.SkipReason != null)
             {
                 Skip(label, size.SkipReason);
+                if (size.Notice != null)
+                    FlashNoticeFromAnyThread(size.Notice);
                 return;
             }
 
@@ -1278,6 +1283,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             public double          RiskDollars;    // for all contracts
             public string          SkipReason;
             public string          ShortReason;    // for the preview line
+            public string          Notice;         // flashed above the buttons when a click is skipped
         }
 
         // Same for long and short: risk = bar range + entry offset + stop offset.
@@ -1289,6 +1295,15 @@ namespace NinjaTrader.NinjaScript.Indicators
 
             r.RangeTicks = (int)Math.Round((high - low) / tick);
             r.RiskTicks  = r.RangeTicks + EntryOffsetTicks + StopOffsetTicks;
+
+            // Both sizing modes: 0 = off. Counts the bar only (high to low), not the offsets.
+            if (MaxSignalBarTicks > 0 && r.RangeTicks > MaxSignalBarTicks)
+            {
+                r.SkipReason  = string.Format("signal bar is {0} ticks, more than Max Signal Bar {1} ticks.", r.RangeTicks, MaxSignalBarTicks);
+                r.ShortReason = "bar size";
+                r.Notice      = string.Format("Bar {0}t > Max Signal Bar {1}t", r.RangeTicks, MaxSignalBarTicks);
+                return r;
+            }
 
             if (Sizing == SizingMode.UseChartTrader)
                 return SizeFromChartTrader(r, tick * value, logDetail);
@@ -1309,6 +1324,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             {
                 r.SkipReason  = string.Format("1 contract would risk ${0:0.00}, more than Max Risk ${1:0.00}.", riskPerContract, MaxRisk);
                 r.ShortReason = "risk";
+                r.Notice      = string.Format(CultureInfo.InvariantCulture, "Risk ${0:0} > Max Risk ${1:0}", riskPerContract, MaxRisk);
                 return r;
             }
 
@@ -1320,6 +1336,8 @@ namespace NinjaTrader.NinjaScript.Indicators
                     : string.Format("risk allows {0} contract{1}; the smallest ATM template is {2}.",
                         contracts, contracts == 1 ? "" : "s", atmChoices[0].Contracts);
                 r.ShortReason = atmChoices.Count == 0 ? "no ATM" : "risk";
+                if (atmChoices.Count > 0)
+                    r.Notice  = string.Format("Risk allows {0}c, smallest ATM is {1}c", contracts, atmChoices[0].Contracts);
                 return r;
             }
             r.Contracts   = r.Template.Contracts;
@@ -1359,6 +1377,16 @@ namespace NinjaTrader.NinjaScript.Indicators
             if (logDetail)
                 Detail(string.Format("Sizing (Chart Trader): {0} contracts, risk {1} ticks = ${2:0.00} total, ATM {3}",
                     qty, r.RiskTicks, r.RiskDollars, r.AtmName));
+
+            // Max Risk is optional here: 0 = no limit. Over the limit = skip, never resize.
+            if (MaxRisk > 0 && r.RiskDollars > MaxRisk + 1e-9)
+            {
+                r.SkipReason  = string.Format("{0} contract{1} would risk ${2:0.00}, more than Max Risk ${3:0.00}.",
+                    qty, qty == 1 ? "" : "s", r.RiskDollars, MaxRisk);
+                r.ShortReason = "risk";
+                r.Notice      = string.Format(CultureInfo.InvariantCulture, "{0}c risk ${1:0} > Max Risk ${2:0}", qty, r.RiskDollars, MaxRisk);
+                return r;
+            }
 
             CheckFiveToOne(r);
             return r;
@@ -1690,12 +1718,12 @@ namespace NinjaTrader.NinjaScript.Indicators
         // 1. Risk
         [RefreshProperties(RefreshProperties.All)]
         [Display(Name = "Sizing", Order = 0, GroupName = "1. Risk",
-            Description = "RiskBased: contracts from Max Risk, ATM from the templates chosen below. UseChartTrader: ATM and quantity as selected in Chart Trader; Max Risk and the templates are ignored.")]
+            Description = "RiskBased: contracts from Max Risk, ATM from the templates chosen below. UseChartTrader: ATM and quantity as selected in Chart Trader; the templates are ignored and Max Risk (if set) skips trades that risk more.")]
         public SizingMode Sizing { get; set; }
 
         [Range(0, double.MaxValue)]
         [Display(Name = "Max Risk ($)", Order = 1, GroupName = "1. Risk",
-            Description = "Risk-based sizing only. Most dollars to risk per trade; sets the number of contracts. No trades while it's 0.")]
+            Description = "Most dollars to risk per trade. RiskBased: sets the number of contracts; no trades while it's 0. UseChartTrader: trades that would risk more are skipped (never resized); 0 = no limit.")]
         public double MaxRisk { get; set; }
 
         [Range(0, 100)]
@@ -1751,6 +1779,11 @@ namespace NinjaTrader.NinjaScript.Indicators
         [Display(Name = "Use 5:1 Filter", Order = 3, GroupName = "3. Filters",
             Description = "For Apex Legacy accounts' 5:1 risk-to-reward rule. Skip if entry-to-stop ticks are more than 5 x the ATM template's first target.")]
         public bool UseFiveToOne { get; set; }
+
+        [Range(0, int.MaxValue)]
+        [Display(Name = "Max Signal Bar Ticks", Order = 4, GroupName = "3. Filters",
+            Description = "Skip if the signal bar (high to low, offsets not included) is more than this many ticks. Works with both Sizing modes. 0 = off.")]
+        public int MaxSignalBarTicks { get; set; }
 
         // 4. Stop
         [Display(Name = "Lock Initial Stop", Order = 1, GroupName = "4. Stop",
@@ -1809,7 +1842,7 @@ namespace NinjaTrader.NinjaScript.Indicators
         #endregion
     }
 
-    // Hides Max Risk and the ATM template choices in the settings window when
+    // Hides the ATM template choices in the settings window when
     // Sizing = UseChartTrader. They come back (with their values) on RiskBased.
     // Same pattern as NinjaTrader's Pivots indicator: mark them not browsable
     // instead of removing them.
@@ -1817,7 +1850,7 @@ namespace NinjaTrader.NinjaScript.Indicators
     {
         private static readonly string[] RiskBasedOnly =
         {
-            "MaxRisk", "Atm1", "Atm2", "Atm3", "Atm4", "Atm5"
+            "Atm1", "Atm2", "Atm3", "Atm4", "Atm5"
         };
 
         public override bool GetPropertiesSupported(ITypeDescriptorContext context) { return true; }
